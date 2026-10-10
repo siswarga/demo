@@ -4070,60 +4070,66 @@
     </div>
   </div>
 
-  <!-- MODAL TAMBAH KAJIAN / PENGAJIAN -->
-  <div class="modal fade" id="modalTambahKajian" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <form id="formTambahKajian" class="modal-content" onsubmit="saveKajian(event)">
-        <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title fw-bold">Tambah Pengajian / Kajian</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+ <!-- MODAL TAMBAH KAJIAN / PENGAJIAN -->
+<div class="modal fade" id="modalTambahKajian" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <form id="formTambahKajian" class="modal-content" onsubmit="saveKajian(event)">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fw-bold">Tambah Pengajian / Kajian</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body row g-3">
+        <div class="col-md-6">
+          <label class="form-label small fw-bold">Tanggal*</label>
+          <!-- Ditambahkan name="tanggal" -->
+          <input type="date" class="form-control" id="kajian_tgl" name="tanggal" required>
         </div>
-        <div class="modal-body row g-3">
-          <div class="col-md-6">
-            <label class="form-label small fw-bold">Tanggal*</label>
-            <input type="date" class="form-control" id="kajian_tgl" required>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label small fw-bold">Jam (WIB)*</label>
-            <input type="time" class="form-control" id="kajian_jam" required>
-          </div>
-          <div class="col-md-12">
-            <label class="form-label small fw-bold">Nama Pemateri / Ustadz*</label>
-            <input type="text" class="form-control" id="kajian_pemateri" placeholder="Cth: Ustadz Dr. H. ..." required>
-          </div>
-          <div class="col-md-12">
-            <label class="form-label small fw-bold">Tema Kajian*</label>
-            <textarea class="form-control" id="kajian_tema" rows="2" placeholder="Cth: Fiqih Ibadah Sehari-hari" required></textarea>
-          </div>
-          <div class="col-md-12">
-            <label class="form-label small fw-bold">Lokasi*</label>
-            <input type="text" class="form-control" id="kajian_lokasi" value="Masjid Assalam" required>
-          </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-bold">Jam (WIB)*</label>
+          <!-- Ditambahkan name="jam" -->
+          <input type="time" class="form-control" id="kajian_jam" name="jam" required>
+        </div>
+        <div class="col-md-12">
+          <label class="form-label small fw-bold">Nama Pemateri / Ustadz*</label>
+          <!-- Ditambahkan name="pemateri" -->
+          <input type="text" class="form-control" id="kajian_pemateri" name="pemateri" placeholder="Cth: Ustadz Dr. H. ..." required>
+        </div>
+        <div class="col-md-12">
+          <label class="form-label small fw-bold">Tema Kajian*</label>
+          <!-- Ditambahkan name="tema" -->
+          <textarea class="form-control" id="kajian_tema" name="tema" rows="2" placeholder="Cth: Fiqih Ibadah Sehari-hari" required></textarea>
+        </div>
+        <div class="col-md-12">
+          <label class="form-label small fw-bold">Lokasi*</label>
+          <!-- Ditambahkan name="lokasi" -->
+          <input type="text" class="form-control" id="kajian_lokasi" name="lokasi" value="Masjid Assalam" required>
+        </div>
 
-          <!-- TAMBAHAN: UPLOAD GAMBAR / PAMFLET KAJIAN -->
-          <div class="col-md-12">
-            <label class="form-label small fw-bold">Pamflet / Brosur Kajian (Opsional)</label>
-            <input type="file" class="form-control" id="kajian_gambar_file" accept="image/*" onchange="previewKajianGambar(this)">
-            <input type="hidden" id="kajian_gambar_url">
-            <div class="mt-2 text-center bg-light p-2 rounded" id="box-preview-kajian" style="display: none;">
-              <img id="kajian_img_preview" src="" alt="Preview Pamflet" style="max-height: 120px; border-radius: 4px;">
-            </div>
+        <!-- TAMBAHAN: UPLOAD GAMBAR / PAMFLET KAJIAN -->
+        <div class="col-md-12">
+          <label class="form-label small fw-bold">Pamflet / Brosur Kajian (Opsional)</label>
+          <input type="file" class="form-control" id="kajian_gambar_file" accept="image/*" onchange="previewKajianGambar(this)">
+          <input type="hidden" id="kajian_gambar_url" name="gambar_url">
+          <div class="mt-2 text-center bg-light p-2 rounded" id="box-preview-kajian" style="display: none;">
+            <img id="kajian_img_preview" src="" alt="Preview Pamflet" style="max-height: 120px; border-radius: 4px;">
           </div>
+        </div>
 
-          <div class="col-md-12">
-            <label class="form-label small fw-bold">Buka Donasi / Konsumsi untuk Warga?</label>
-            <select class="form-select" id="kajian_donasi">
-              <option value="Tidak">Tidak</option>
-              <option value="Ya">Ya</option>
-            </select>
-          </div>
+        <div class="col-md-12">
+          <label class="form-label small fw-bold">Buka Donasi / Konsumsi untuk Warga?</label>
+          <!-- Ditambahkan name="openDonasi" -->
+          <select class="form-select" id="kajian_donasi" name="openDonasi">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
         </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary w-100 fw-bold">Simpan & Tampilkan di Kegiatan Warga</button>
-        </div>
-      </form>
-    </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary w-100 fw-bold">Simpan & Tampilkan di Kegiatan Warga</button>
+      </div>
+    </form>
   </div>
+</div>
 
   <!-- Modal Qurban -->
   <div class="modal fade" id="modalQurban" tabindex="-1">
@@ -7230,42 +7236,71 @@ async function apiGet(action, params = {}) {
       new bootstrap.Modal(document.getElementById('modalListTunggakan')).show();
     }
     
-    // Fungsi pengirim yang mengambil data langsung dari array global berdasarkan index
-    function kirimPengingatOtomatis(index) {
-      let item = dataListTunggakanGlobal[index];
-      let namaKK = typeof item === 'object' ? item.nama : item;
-      let waKK = typeof item === 'object' && item.wa ? item.wa : '-';
-      
-      let num = String(waKK).replace(/\D/g, '');
-      if (num.startsWith('0')) num = '62' + num.substring(1);
-    
-      let waText = `*PEMBERITAHUAN TUNGGAKAN IURAN*\n\n` +
-                   `Halo Bapak/Ibu *${namaKK}*,\n\n` +
-                   `Pengurus mencatat iuran Kas Warga Anda untuk bulan ini belum lunas/tercatat.\n\n` +
-                   `Mohon untuk segera melakukan pembayaran. Terima kasih perhatiannya 🙏`;
-    
-      Swal.fire({
-        title: 'Mengirim Pesan...',
-        text: `Mengirim pengingat ke ${namaKK}`,
-        allowOutsideClick: false,
-        didOpen: () => { Swal.showLoading(); }
-      });
-    
-      google.script.run
-        .withSuccessHandler(() => {
+// Fungsi pengirim yang mengambil data langsung dari array global berdasarkan index
+  function kirimPengingatOtomatis(index) {
+  let item = dataListTunggakanGlobal[index];
+  let namaKK = typeof item === 'object' ? item.nama : item;
+  let waKK = typeof item === 'object' && item.wa ? item.wa : '-';
+  
+  // 1. Format Nomor WA
+  let num = String(waKK).replace(/\D/g, ''); 
+  if (num.startsWith('0')) num = '62' + num.substring(1);
+  else if (num.startsWith('8')) num = '62' + num;             
+  else if (!num.startsWith('62')) num = '62' + num;           
+
+  // 2. Rangkai teks pesan
+  let waText = `*PEMBERITAHUAN TUNGGAKAN IURAN*\n\n` +
+               `Halo Bapak/Ibu *${namaKK}*,\n\n` +
+               `Pengurus mencatat iuran Kas Warga Anda untuk bulan ini belum lunas/tercatat.\n\n` +
+               `Mohon untuk segera melakukan pembayaran. Terima kasih perhatiannya 🙏`;
+
+  // 3. PERBAIKAN: DETEKSI SAKLAR SUPER KETAT
+  let rawMode = typeof appSettings !== 'undefined' ? appSettings['wa_mode_otomatis'] : false;
+  
+  // Ubah apapun isinya menjadi huruf kecil semua agar mudah dideteksi
+  let valString = String(rawMode).toLowerCase().trim(); 
+  
+  // Jika nilai saklar di database adalah salah satu dari kata-kata ini, maka Gateway Aktif!
+  let isGatewayAktif = (valString === 'true' || valString === 'ya' || valString === 'on' || valString === '1' || valString === 'aktif');
+  
+  // Log ke console untuk memantau status asli saklar (Tekan F12 untuk melihatnya)
+  console.log("Status asli saklar dari database:", valString, "| Apakah Gateway Aktif?", isGatewayAktif);
+
+  // 4. JIKA SAKLAR OTOMATIS AKTIF (Kirim via Gateway di Latar Belakang)
+  if (isGatewayAktif) {
+    Swal.fire({
+      title: 'Mengirim Pesan...',
+      text: `Mengirim pengingat ke ${namaKK} di latar belakang...`,
+      allowOutsideClick: false,
+      didOpen: () => { Swal.showLoading(); }
+    });
+
+    google.script.run
+      .withSuccessHandler((res) => {
+        if (res && res.success) {
           Swal.fire({
             icon: 'success',
             title: 'Berhasil!',
             text: `Pengingat untuk ${namaKK} berhasil dikirim otomatis.`,
-            timer: 1500,
+            timer: 2000,
             showConfirmButton: false
           });
-        })
-        .withFailureHandler(err => {
-          Swal.fire('Gagal', String(err), 'error');
-        })
-        .sendWhatsAppMessage(num, waText);
-    }
+        } else {
+          Swal.fire('Gagal Kirim', (res ? res.message : 'Terjadi kesalahan di server'), 'error');
+        }
+      })
+      .withFailureHandler(err => {
+        Swal.fire('Error Gateway', String(err), 'error');
+      })
+      // Pastikan memanggil sendWhatsAppMessage dengan 3 argumen (teks, lalu null untuk gambar)
+      .sendWhatsAppMessage(num, waText, null); 
+  } 
+  // 5. JIKA SAKLAR DIMATIKAN (Buka aplikasi WA manual)
+  else {
+    let waUrl = "https://api.whatsapp.com/send?phone=" + num + "&text=" + encodeURIComponent(waText);
+    window.open(waUrl, '_blank');
+  }
+}
         
         // UPDATE EXPORT KAS WARGA DIBUAT DUA MACAM:
         function exportKasWargaPDF(tipeLaporan) { 
@@ -10041,125 +10076,109 @@ async function apiGet(action, params = {}) {
           }
         }
         
-        // =====================================================
-    // SCRIPT AUTO-GENERATE FLYER & SHARE WA - KAJIAN / PENGAJIAN
-    // =====================================================
-    function shareWaPengajian(id) {
-      const p = dataMasjidGlobal.pengajian.find(x => x.id === id);
-      if (!p) {
-        return Swal.fire('Error', 'Data pengajian tidak ditemukan', 'error');
-      }
+// =====================================================
+// SCRIPT SMART SHARE WA (GATEWAY OTOMATIS ATAU MANUAL)
+// =====================================================
+function shareWaPengajian(id) {
+  // 1. Cari data pengajian
+  const p = dataMasjidGlobal.pengajian.find(x => x.id === id);
+  if (!p) {
+    return Swal.fire('Error', 'Data pengajian tidak ditemukan', 'error');
+  }
+
+  // 2. Rangkai teks caption
+  let namaApp = typeof appSettings !== 'undefined' && appSettings['nama_aplikasi'] ? appSettings['nama_aplikasi'] : 'SI-GAS';
+  let text = `*INFORMASI KAJIAN ISLAM / PENGAJIAN*\n\n` +
+             `Assalamualaikum Warahmatullahi Wabarakatuh,\n\n` +
+             `Diinformasikan kepada seluruh warga, insya Allah akan diselenggarakan kajian Islam:\n\n` +
+             `*Tema:* ${p.tema}\n` +
+             `*Pemateri:* ${p.pemateri}\n` +
+             `*Tanggal:* ${p.tanggal}\n` +
+             `*Waktu:* ${p.jam} WIB\n` +
+             `*Lokasi:* ${p.lokasi}\n\n` +
+             `👉 *Silakan buka Aplikasi Portal Warga (${namaApp}) di HP Anda untuk informasi selengkapnya.*\n\n` +
+             `Demikian undangan ini disampaikan. Terima kasih. 🙏\n\n` +
+             `_Pesan otomatis dari Aplikasi ${namaApp}_`;
+
+  // =====================================================
+  // CEK PENGATURAN WA GATEWAY (Mode Latar Belakang)
+  // =====================================================
+  // PERBAIKAN: Menggunakan wa_mode_otomatis sesuai pengaturan Anda
+  let isGatewayAktif = typeof appSettings !== 'undefined' && (appSettings['wa_mode_otomatis'] === true || appSettings['wa_mode_otomatis'] === 'true' || appSettings['wa_mode_otomatis'] === 'Ya'); 
+  let noGrupTujuan = typeof appSettings !== 'undefined' ? appSettings['wa_group_jid'] : ""; 
+
+  // JIKA SAKLAR GATEWAY AKTIF & NOMOR GRUP ADA
+  if (isGatewayAktif && noGrupTujuan) {
     
-      // Tampilkan loading sebentar saat flyer digenerate
-      Swal.fire({
-        title: 'Membuat Flyer Kajian...',
-        text: 'Mohon tunggu sebentar, sistem sedang merender gambar undangan.',
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
+    // Tampilkan loading
+    Swal.fire({
+      title: 'Mengirim Pesan...',
+      text: 'Pesan sedang dikirim ke Grup WhatsApp warga di latar belakang.',
+      allowOutsideClick: false,
+      didOpen: () => { Swal.showLoading(); }
+    });
+
+    // Panggil fungsi pengirim pesan Gateway di code.gs
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if(res.success) {
+           Swal.fire('Berhasil!', 'Pesan kajian telah terkirim otomatis ke Grup WhatsApp.', 'success');
+        } else {
+           Swal.fire('Gagal', res.message, 'error');
         }
-      });
-    
-      // 1. Rangkai teks caption WhatsApp
-      let namaApp = appSettings['nama_aplikasi'] || 'SI-GAS';
-      let text = `*INFORMASI KAJIAN ISLAM / PENGAJIAN*\n\n` +
-                 `Assalamualaikum Warahmatullahi Wabarakatuh,\n\n` +
-                 `Diinformasikan kepada seluruh warga, insya Allah akan diselenggarakan kajian Islam:\n\n` +
-                 `*Tema:* ${p.tema}\n` +
-                 `*Pemateri:* ${p.pemateri}\n` +
-                 `*Tanggal:* ${p.tanggal}\n` +
-                 `*Waktu:* ${p.jam} WIB\n` +
-                 `*Lokasi:* ${p.lokasi}\n\n` +
-                 `👉 *Silakan buka Aplikasi Portal Warga (${namaApp}) di HP Anda untuk informasi selengkapnya atau berpartisipasi memberikan donasi/konsumsi.*\n\n` +
-                 `Demikian undangan ini disampaikan. Atas kehadiran dan partisipasinya kami ucapkan terima kasih. 🙏\n\n` +
-                 `_Pesan otomatis dari Aplikasi ${namaApp}_`;
-    
-      // 2. Buat elemen HTML tersembunyi untuk template Flyer
-      const container = document.createElement('div');
-      container.style.position = 'absolute';
-      container.style.left = '-9999px';
-      container.style.top = '0';
-      container.style.width = '800px';
-      container.style.backgroundColor = '#f8f9fa';
-      container.style.padding = '40px';
-      container.style.fontFamily = 'Arial, sans-serif';
-      container.style.borderRadius = '16px';
-    
-      let primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim() || '#198754';
-      let namaKomplek = appSettings['nama_komplek'] || 'Lingkungan Kita';
-    
-      container.innerHTML = `
-        <div style="background: linear-gradient(135deg, ${primaryColor}, #157347); color: white; padding: 35px; border-radius: 12px; text-align: center; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-          <h4 style="margin: 0; font-size: 15px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.9;">Kajian Islam Ilmiah</h4>
-          <h1 style="margin: 10px 0 0 0; font-size: 26px; font-weight: bold;">${namaKomplek}</h1>
-        </div>
-        <div style="background: white; padding: 35px; border-radius: 12px; border: 2px solid #e9ecef; margin-bottom: 20px;">
-          <span style="background: rgba(25, 135, 84, 0.1); color: ${primaryColor}; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; display: inline-block; margin-bottom: 15px;">TEMA KAJIAN</span>
-          <h2 style="color: #212529; font-size: 24px; margin: 0 0 25px 0; line-height: 1.4; font-weight: bold;">${p.tema}</h2>
-          
-          <div style="display: flex; margin-bottom: 15px; align-items: center; border-bottom: 1px dashed #dee2e6; padding-bottom: 12px;">
-            <div style="font-weight: bold; width: 140px; color: #6c757d;">Pemateri</div>
-            <div style="font-size: 18px; color: #212529; font-weight: bold;">: ${p.pemateri}</div>
-          </div>
-          <div style="display: flex; margin-bottom: 15px; align-items: center; border-bottom: 1px dashed #dee2e6; padding-bottom: 12px;">
-            <div style="font-weight: bold; width: 140px; color: #6c757d;">Hari / Tanggal</div>
-            <div style="font-size: 16px; color: #212529; font-weight: bold;">: ${p.tanggal}</div>
-          </div>
-          <div style="display: flex; margin-bottom: 15px; align-items: center; border-bottom: 1px dashed #dee2e6; padding-bottom: 12px;">
-            <div style="font-weight: bold; width: 140px; color: #6c757d;">Waktu</div>
-            <div style="font-size: 16px; color: #212529; font-weight: bold;">: ${p.jam} WIB</div>
-          </div>
-          <div style="display: flex; align-items: center;">
-            <div style="font-weight: bold; width: 140px; color: #6c757d;">Tempat</div>
-            <div style="font-size: 16px; color: #212529; font-weight: bold;">: ${p.lokasi}</div>
-          </div>
-        </div>
-        <div style="text-align: center; color: #adb5bd; font-size: 12px; margin-top: 15px;">
-          Dokumen Undangan Digital &bull; ${namaApp}
-        </div>
-      `;
-    
-      document.body.appendChild(container);
-    
-      // 3. Render HTML ke Kanvas Gambar menggunakan html2canvas
-      html2canvas(container, { scale: 2, backgroundColor: '#f8f9fa', useCORS: true }).then(canvas => {
-        canvas.toBlob(blob => {
-          document.body.removeChild(container);
-          let file = new File([blob], `Flyer_Kajian_${p.id}.jpg`, { type: "image/jpeg" });
-    
-          // Cek apakah perangkat mendukung Web Share API (Bisa kirim file gambar langsung ke WA di HP)
-          if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            Swal.close();
-            navigator.share({
-              title: 'Kajian Islam: ' + p.tema,
-              text: text,
-              files: [file]
-            }).catch(() => {});
-          } else {
-            // Fallback untuk Desktop: Download Gambar & Salin Teks ke Clipboard
-            let link = document.createElement('a');
-            link.download = `Flyer_Kajian_${p.id}.jpg`;
-            link.href = canvas.toDataURL('image/jpeg', 0.9);
-            link.click();
-    
-            navigator.clipboard.writeText(text).then(() => {
-              Swal.fire({
-                icon: 'success',
-                title: 'Flyer Berhasil Dibuat!',
-                html: '<b>1.</b> Gambar flyer telah didownload ke perangkat Anda.<br><b>2.</b> Teks caption telah <b>disalin otomatis ke clipboard</b>.<br><br>Silakan buka WhatsApp, *Paste* (Ctrl+V) teksnya, lalu lampirkan gambar flyer tersebut!',
-                confirmButtonColor: '#198754'
-              });
-            }).catch(() => {
-              Swal.close();
-              window.open("https://wa.me/?text=" + encodeURIComponent(text), '_blank');
-            });
-          }
-        }, 'image/jpeg', 0.9);
-      }).catch(err => {
-        document.body.removeChild(container);
-        Swal.fire('Gagal', 'Terjadi kesalahan saat merender flyer: ' + err.message, 'error');
-      });
+      })
+      .withFailureHandler(function(err) {
+        Swal.fire('Error', "Koneksi ke server gagal: " + err.message, 'error');
+      })
+      .sendWhatsAppMessage(noGrupTujuan, text, p.gambar_url);
+      
+    return; // Hentikan proses agar tidak buka WA manual
+  }
+
+  // =====================================================
+  // JIKA SAKLAR MATI (ATAU GRUP KOSONG): JALANKAN MODE MANUAL
+  // =====================================================
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  let waUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(text);
+
+  const eksekusiShareManual = (blob) => {
+    // MODE HP
+    if (isMobile && navigator.canShare) {
+      let shareData = { title: p.tema, text: text };
+      if (blob) {
+        let file = new File([blob], "Pamflet_Kajian.jpg", { type: blob.type });
+        if (navigator.canShare({ files: [file] })) shareData.files = [file];
+      }
+      navigator.share(shareData).catch(()=>{});
+    } 
+    // MODE LAPTOP/PC
+    else {
+      if (blob) {
+        try {
+          const item = new ClipboardItem({ [blob.type]: blob });
+          navigator.clipboard.write([item]).then(() => {
+            window.open(waUrl, '_blank');
+          }).catch(err => {
+             window.open(waUrl, '_blank');
+          });
+        } catch(e) {
+          window.open(waUrl, '_blank');
+        }
+      } else {
+        window.open(waUrl, '_blank');
+      }
     }
+  };
+
+  if (p.gambar_url && p.gambar_url.trim() !== '') {
+    fetch(p.gambar_url)
+      .then(res => res.blob())
+      .then(blob => eksekusiShareManual(blob))
+      .catch(err => eksekusiShareManual(null));
+  } else {
+    eksekusiShareManual(null);
+  }
+}
         
         
         function openModalMuadzin() { document.getElementById('formMuadzin').reset(); document.getElementById('mdz_tgl').valueAsDate=new Date(); new bootstrap.Modal(document.getElementById('modalMuadzin')).show(); }
@@ -10197,6 +10216,34 @@ async function apiGet(action, params = {}) {
       }
     }
     
+	function saveKajian(event) {
+  // 1. Cegah halaman me-refresh sendiri
+  event.preventDefault(); 
+  
+  // 2. Ambil elemen formulir
+  let formElement = document.getElementById('formTambahKajian');
+  
+  // 3. Ambil token (sesuaikan dengan cara aplikasi Anda menyimpan sesi)
+  let token = localStorage.getItem('token') || "dummy_token"; 
+
+  // 4. Kirim data ke code.gs melalui Proxy
+  google.script.run
+    .withSuccessHandler(function(res) {
+       alert(res.message); 
+       
+       let modal = bootstrap.Modal.getInstance(document.getElementById('modalTambahKajian'));
+       if(modal) modal.hide();
+       document.getElementById('formTambahKajian').reset();
+
+       window.location.reload(); 
+    })
+   
+    .withFailureHandler(function(err) {
+       alert("Gagal mengirim data: " + err.message);
+    })
+    .savePengajian(token, formElement); 
+}
+	
         function openModalQurban() { document.getElementById('formQurban').reset(); new bootstrap.Modal(document.getElementById('modalQurban')).show(); }
         
         function saveMuadzin(e) { 
@@ -10208,42 +10255,7 @@ async function apiGet(action, params = {}) {
           }).saveJadwalMuadzin(localStorage.getItem('sigas_token'), {tanggal:document.getElementById('mdz_tgl').value, waktuSholat:document.getElementById('mdz_waktu').value, imam:document.getElementById('mdz_imam').value, muadzin:document.getElementById('mdz_muadzin').value, keterangan:document.getElementById('mdz_ket').value}); 
         }
         
-        function savePengajian(token, p) {
-          const session = verifySession(token);
-          if (!isAuthorized(token, 'menu-dewan-masjid')) return { success: false, message: "Akses ditolak" };
-          const ss = SpreadsheetApp.getActiveSpreadsheet();
-          
-          // 1. Simpan ke Database Dewan Masjid
-          const sheet = ss.getSheetByName(SHEETS.JADWAL_PENGAJIAN);
-          let id = "KJN-" + new Date().getTime();
-          sheet.appendRow([id, p.tanggal, p.jam, p.pemateri, p.tema, p.lokasi, 'Akan Datang', new Date()]);
-        
-          // 2. OTOMATIS TAMBAHKAN KE JADWAL KEGIATAN UTAMA (DASHBOARD WARGA)
-          const sheetKgt = ss.getSheetByName(SHEETS.JADWAL_KEGIATAN);
-          if (sheetKgt) {
-        const lastRowKgt = sheetKgt.getLastRow();
-        let newIdNum = 1;
-        if (lastRowKgt > 1) {
-          let match = String(sheetKgt.getRange(lastRowKgt, 1).getValue()).match(/\d+$/);
-          if (match) newIdNum = parseInt(match[0], 10) + 1;
-        }
-        let idKgt = "KGT-" + ("000000" + newIdNum).slice(-6);
-        
-        let tglObj = new Date(p.tanggal);
-        let namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'][tglObj.getDay()] || '-',
-            deskripsiKajian = "Kajian Islam: " + p.tema + " (: " + p.pemateri + ")";
-        
-        // Format kolom: [ID Kegiatan, Tanggal, Hari, Waktu, Deskripsi, Lokasi, Status, Notifikasi, Created By, Created At, Updated At, Waktu Selesai, Sesi, Open Donasi, Tanggal Selesai]
-        sheetKgt.appendRow([
-          idKgt, p.tanggal, namaHari, p.jam, deskripsiKajian, p.lokasi || 'Masjid Komplek', 
-          'Akan Datang', 'Belum Dikirim', session.data.nama, new Date(), new Date(),
-          p.jam, 'Masjid', p.openDonasi || 'Tidak', p.tanggal
-        ]);
-          }
-        
-          recordHistory(session.data.nama, "Dewan Masjid", "Jadwal kajian & sinkronisasi kegiatan: " + p.tema);
-          return { success: true, message: "Jadwal Pengajian berhasil disimpan & otomatis tampil di Kegiatan Warga!" };
-        }
+       
         
         function delMasjid(tipe, id) {
           Swal.fire({title:'Hapus Data?', text:'Tindakan ini tidak dapat dibatalkan', icon:'warning', showCancelButton:true, confirmButtonColor:'#dc3545', confirmButtonText:'Ya, Hapus'})
