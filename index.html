@@ -9947,25 +9947,44 @@ function loadDataBlacklist() {
     .getBlacklistData(token);
 }
               	
-              function openModalBlacklist(){
-                document.getElementById('formBlacklist').reset();
-                const sel = document.getElementById('blacklist_kk');
-                sel.innerHTML = '<option value="">Loading...</option>';
-                
-                google.script.run.withSuccessHandler(res => {
-              if(res.success){
-                sel.innerHTML = '<option value="">-- Pilih KK --</option>';
-                
-                // Sesuaikan nama properti di bawah ini (misal: item.nama atau item.noKK) 
-                // tergantung dari struktur data yang dikirim oleh backend getKepalaKeluargaAktif
-                res.data.forEach(item => {
-                  sel.innerHTML += `<option value="${item.noKK}">${item.nama}</option>`;
-                });
-              }
-                }).getKepalaKeluargaAktif(localStorage.getItem('sigas_token'));
-                
-                new bootstrap.Modal(document.getElementById('modalBlacklist')).show();
-              }
+function openModalBlacklist() {
+  document.getElementById('formBlacklist').reset();
+  const sel = document.getElementById('blacklist_kk');
+  sel.innerHTML = '<option value="">Loading...</option>';
+
+  google.script.run.withSuccessHandler(res => {
+    if (res && res.success && Array.isArray(res.data)) {
+      sel.innerHTML = '<option value="">-- Pilih KK --</option>';
+
+      // 1. Saring data unik berdasarkan No KK atau Nama
+      const seenKey = new Set();
+      const listKKUnik = [];
+
+      res.data.forEach(item => {
+        // Kunci unik: utamakan noKK, jika kosong gunakan nama
+        const key = String(item.noKK || item.nama || '').trim().toLowerCase();
+        const nama = String(item.nama || '').trim();
+
+        if (key && !seenKey.has(key) && nama && nama !== '-') {
+          seenKey.add(key);
+          listKKUnik.push(item);
+        }
+      });
+
+      // 2. Urutkan nama Kepala Keluarga secara alfabetis (A - Z)
+      listKKUnik.sort((a, b) => String(a.nama).localeCompare(String(b.nama)));
+
+      // 3. Tampilkan ke pilihan dropdown
+      listKKUnik.forEach(item => {
+        sel.innerHTML += `<option value="${item.noKK}">${item.nama}</option>`;
+      });
+    } else {
+      sel.innerHTML = '<option value="">-- Gagal memuat data --</option>';
+    }
+  }).getKepalaKeluargaAktif(localStorage.getItem('sigas_token'));
+
+  new bootstrap.Modal(document.getElementById('modalBlacklist')).show();
+}
               	
 function saveBlacklistData(e) {
   e.preventDefault();
@@ -10787,52 +10806,73 @@ function openModalPermohonan() {
               });
               }
               
-              	function openModalPeminjaman() {
-        const modalEl = document.getElementById('modalPeminjaman');
-        if (!modalEl) return;
-      
-        // 1. Pindahkan elemen modal ke body secara otomatis agar tidak tertutup layar hitam
-        if (modalEl.parentElement !== document.body) {
-          document.body.appendChild(modalEl);
-        }
-      
-        const form = document.getElementById('formPeminjaman');
-        if (form) form.reset();
-        
-        let selectJenis = document.getElementById('pinjam_jenis');
-        if (selectJenis) selectJenis.value = 'Warga';
-        
-        // 2. Muat pilihan warga secara otomatis
-        const sw = document.getElementById('pinjam_select_warga');
-        if (sw) {
-          sw.innerHTML = '<option value="">-- Memuat Warga --</option>';
-          google.script.run.withSuccessHandler(res => {
-            if (res && res.success) {
-              listWargaPrmTemp = res.data;
-              sw.innerHTML = '<option value="">-- Pilih Warga --</option>';
-              res.data.forEach(w => sw.innerHTML += `<option value="${w.nama}">${w.nama}</option>`);
-            }
-          }).getListNamaWarga('PUBLIC');
-        }
-        
-        // 3. Muat data inventaris secara background (tanpa menumpuk showLoading di atas modal)
-        google.script.run.withSuccessHandler(res => {
-          if (res && res.success) {
-            dataInvGlobal = res.data;
+function openModalPeminjaman() {
+  const modalEl = document.getElementById('modalPeminjaman');
+  if (!modalEl) return;
+
+  // 1. Pindahkan elemen modal ke body secara otomatis agar tidak tertutup layar hitam
+  if (modalEl.parentElement !== document.body) {
+    document.body.appendChild(modalEl);
+  }
+
+  const form = document.getElementById('formPeminjaman');
+  if (form) form.reset();
+
+  let selectJenis = document.getElementById('pinjam_jenis');
+  if (selectJenis) selectJenis.value = 'Warga';
+
+  // 2. Muat pilihan warga secara otomatis (dengan filter data unik)
+  const sw = document.getElementById('pinjam_select_warga');
+  if (sw) {
+    sw.innerHTML = '<option value="">-- Memuat Warga --</option>';
+    google.script.run.withSuccessHandler(res => {
+      if (res && res.success && Array.isArray(res.data)) {
+        listWargaPrmTemp = res.data;
+        sw.innerHTML = '<option value="">-- Pilih Warga --</option>';
+
+        // Saring nama agar tidak ganda
+        const namaTerdaftar = new Set();
+        const listWargaUnik = [];
+
+        res.data.forEach(w => {
+          const nama = String(w.nama || w.nama_lengkap || '').trim();
+          const namaKey = nama.toLowerCase();
+
+          if (nama && !namaTerdaftar.has(namaKey) && nama !== '-') {
+            namaTerdaftar.add(namaKey);
+            listWargaUnik.push(w);
           }
-          if (typeof renderDropdownBarangPinjam === 'function') {
-            renderDropdownBarangPinjam();
-          }
-        }).getInventory('PUBLIC_ACCESS');
-        
-        if (typeof handlePinjamJenis === 'function') {
-          handlePinjamJenis();
-        }
-        
-        // 4. Buka modal dengan getOrCreateInstance agar layer hitam tidak menumpuk
-        const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
-        modalInstance.show();
+        });
+
+        // Urutkan nama sesuai abjad (A - Z)
+        listWargaUnik.sort((a, b) => a.nama.localeCompare(b.nama));
+
+        // Tampilkan ke dropdown
+        listWargaUnik.forEach(w => {
+          sw.innerHTML += `<option value="${w.nama}">${w.nama}</option>`;
+        });
       }
+    }).getListNamaWarga('PUBLIC');
+  }
+
+  // 3. Muat data inventaris secara background
+  google.script.run.withSuccessHandler(res => {
+    if (res && res.success) {
+      dataInvGlobal = res.data;
+    }
+    if (typeof renderDropdownBarangPinjam === 'function') {
+      renderDropdownBarangPinjam();
+    }
+  }).getInventory('PUBLIC_ACCESS');
+
+  if (typeof handlePinjamJenis === 'function') {
+    handlePinjamJenis();
+  }
+
+  // 4. Buka modal
+  const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+  modalInstance.show();
+}
               	
               function handlePinjamJenis() { const j=document.getElementById('pinjam_jenis').value; const dw=document.getElementById('div_pinjam_warga'), sw=document.getElementById('pinjam_select_warga'); const dl=document.getElementById('div_pinjam_namaLuar'), il=document.getElementById('pinjam_namaLuar'); const iw=document.getElementById('pinjam_wa'); iw.value=''; if(j==='Warga'){dw.classList.remove('d-none'); sw.required=true; dl.classList.add('d-none'); il.required=false; iw.readOnly=true; sw.innerHTML='<option value="">Loading...</option>'; google.script.run.withSuccessHandler(res=>{if(res.success){listWargaPrmTemp=res.data; sw.innerHTML='<option value="">-- Pilih Warga --</option>'; res.data.forEach(w=>sw.innerHTML+=`<option value="${w.nama}">${w.nama}</option>`);}}).getListNamaWarga('PUBLIC');}else{dw.classList.add('d-none'); sw.required=false; dl.classList.remove('d-none'); il.required=true; iw.readOnly=false; iw.placeholder="Ketik No WA...";} renderDropdownBarangPinjam(); }
               function handlePinjamWarga() { let v=document.getElementById('pinjam_select_warga').value; if(v!==''){let m=listWargaPrmTemp.find(w=>w.nama===v); if(m)document.getElementById('pinjam_wa').value=m.wa;}else document.getElementById('pinjam_wa').value=''; }
