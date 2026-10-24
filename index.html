@@ -9232,20 +9232,38 @@ if (canvasUsia) {
                 }).withFailureHandler(()=>{hideLoading();Swal.fire('Akses Dibatasi', 'Anda tidak memiliki hak akses ke Kas Warga.', 'warning');}).getKasWargaData(localStorage.getItem('sigas_token')); 
               }
               
-              	function loadKKDropdown(){ 
-                google.script.run.withSuccessHandler(res => {
-              if(res.success){
-                const sel = document.getElementById('kas_in_kk');
-                sel.innerHTML = '<option value="">-- Pilih KK --</option>';
-                
-                res.data.forEach(item => {
-                  let namaKK = (typeof item === 'object' && item !== null) ? item.nama : item;
-                  
-                  sel.innerHTML += `<option value="${namaKK}">${namaKK}</option>`;
-                });
-              }
-                }).getKepalaKeluargaAktif(localStorage.getItem('sigas_token')); 
-              }
+function loadKKDropdown() {
+  const sel = document.getElementById('kas_in_kk');
+  if (!sel) return;
+
+  google.script.run.withSuccessHandler(res => {
+    if (res && res.success && Array.isArray(res.data)) {
+      sel.innerHTML = '<option value="">-- Pilih KK --</option>';
+
+      // 1. Saring agar nama Kepala Keluarga tidak muncul ganda
+      const namaTersimpan = new Set();
+      const listKKUnik = [];
+
+      res.data.forEach(item => {
+        let namaKK = (typeof item === 'object' && item !== null) ? (item.nama || item.noKK) : item;
+        namaKK = String(namaKK || '').trim();
+
+        if (namaKK && !namaTersimpan.has(namaKK.toLowerCase()) && namaKK !== '-') {
+          namaTersimpan.add(namaKK.toLowerCase());
+          listKKUnik.push(namaKK);
+        }
+      });
+
+      // 2. Urutkan nama dari A sampai Z
+      listKKUnik.sort((a, b) => a.localeCompare(b));
+
+      // 3. Masukkan hasil bersih ke elemen dropdown
+      listKKUnik.forEach(namaKK => {
+        sel.innerHTML += `<option value="${namaKK}">${namaKK}</option>`;
+      });
+    }
+  }).getKepalaKeluargaAktif(localStorage.getItem('sigas_token'));
+}
               
               	function renderTableKas(){ const s=document.getElementById('search-kas').value.toLowerCase(), fil=document.getElementById('filter-kas-jenis').value; let f=dataKasGlobal.filter(k=>{let ket=String(k.keterangan).toLowerCase(); let nWg=String(k.namaWarga).toLowerCase(); let nKK=String(k.namaKK).toLowerCase(); let kat=String(k.kategori).toLowerCase(); return (fil==='All'||k.jenis===fil)&&(ket.includes(s)||nWg.includes(s)||nKK.includes(s)||kat.includes(s));}); const st=(currentPageKas-1)*dataPerPage; const pg=f.slice(st,st+dataPerPage); const tb=document.getElementById('tbody-kas'); tb.innerHTML=''; if(pg.length===0){tb.innerHTML='<tr><td colspan="5" class="text-center">Kosong</td></tr>';}else{pg.forEach(k=>{let nm=k.kategori==='Iuran Warga'||k.kategori==='Denda Ronda'?k.namaKK:k.namaWarga; let statusBadge = k.status === 'Menunggu Konfirmasi' ? `<span class="badge bg-warning text-dark">Pending</span> <button class="btn btn-sm btn-success py-0 ms-1" onclick="konfirmasiKasWarga('${k.id}', true)">Terima</button>` : `<span class="badge bg-success">Selesai</span>`; tb.innerHTML+=`<tr><td>${k.tanggal}</td><td><i class="fas ${k.jenis==='Kas Masuk'?'fa-arrow-down text-primary':'fa-arrow-up text-danger'}"></i> ${k.kategori}</td><td>${k.keterangan} ${nm!=='-'?`(<b>${nm}</b>)`:''}</td><td class="fw-bold ${k.jenis==='Kas Masuk'?'text-primary':'text-danger'}">${formatRupiah(k.nominal)}</td><td>${k.status==='Menunggu Konfirmasi'?'<span class="badge bg-warning text-dark">Pending</span>':'<span class="badge bg-success">Selesai</span>'}</td></tr>`;});} document.getElementById('kas-info').innerText=`Menampilkan ${st+1} - ${st+pg.length} dari ${f.length}`; document.getElementById('kas-pagination').innerHTML=`${currentPageKas>1?`<button class="btn btn-sm btn-outline-secondary" onclick="currentPageKas--; renderTableKas()">Prev</button>`:''}${currentPageKas<Math.ceil(f.length/dataPerPage)?`<button class="btn btn-sm btn-outline-secondary" onclick="currentPageKas++; renderTableKas()">Next</button>`:''}`; }
              
@@ -16206,23 +16224,46 @@ function simpanPengaturanSuperadmin(e) {
             });
           }
           
-          function openModalKopAnggota() {
-            document.getElementById('formKopAnggota').reset();
-            document.getElementById('kop_agt_tgl').valueAsDate = new Date();
-            
-            let sw = document.getElementById('kop_agt_warga');
-            sw.innerHTML = '<option value="">-- Memuat Warga --</option>';
-            
-            google.script.run.withSuccessHandler(res => {
-              if (res && res.success) {
-                listWargaKopTemp = res.data;
-                sw.innerHTML = '<option value="">-- Pilih Warga --</option>';
-                res.data.forEach(w => sw.innerHTML += `<option value="${w.nama}">${w.nama}</option>`);
-              }
-            }).getListNamaWarga('PUBLIC');
-            
-            new bootstrap.Modal(document.getElementById('modalKopAnggota')).show();
-          }
+function openModalKopAnggota() {
+  document.getElementById('formKopAnggota').reset();
+  document.getElementById('kop_agt_tgl').valueAsDate = new Date();
+
+  let sw = document.getElementById('kop_agt_warga');
+  sw.innerHTML = '<option value="">-- Memuat Warga --</option>';
+
+  google.script.run.withSuccessHandler(res => {
+    if (res && res.success && Array.isArray(res.data)) {
+      listWargaKopTemp = res.data;
+      sw.innerHTML = '<option value="">-- Pilih Warga --</option>';
+
+      // 1. Saring agar hanya nama unik yang masuk
+      const namaTerdaftar = new Set();
+      const listWargaUnik = [];
+
+      res.data.forEach(w => {
+        const nama = String(w.nama || w.nama_lengkap || '').trim();
+        const namaKey = nama.toLowerCase();
+
+        if (nama && !namaTerdaftar.has(namaKey) && nama !== '-') {
+          namaTerdaftar.add(namaKey);
+          listWargaUnik.push(w);
+        }
+      });
+
+      // 2. Urutkan nama sesuai abjad (A - Z)
+      listWargaUnik.sort((a, b) => a.nama.localeCompare(b.nama));
+
+      // 3. Render ke opsi dropdown
+      listWargaUnik.forEach(w => {
+        sw.innerHTML += `<option value="${w.nama}">${w.nama}</option>`;
+      });
+    } else {
+      sw.innerHTML = '<option value="">-- Gagal memuat data --</option>';
+    }
+  }).getListNamaWarga('PUBLIC');
+
+  new bootstrap.Modal(document.getElementById('modalKopAnggota')).show();
+}
           
           function handleKopWargaSelect() {
             let v = document.getElementById('kop_agt_warga').value;
